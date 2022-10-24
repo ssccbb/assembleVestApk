@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.6" project-jdk-type="Python SDK" />
+  <component name="UnattendedHostPersistenceState">
+    <option name="openedFilesInfos">
+      <list>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="76" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/excuter.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="354" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/constants.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="8655" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/release.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="6756" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/Process.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="1710" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/encrypt/AES.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="589" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/encrypt/AesEncry.py" />
+        </OpenedFileInfo>
+      </list>
+    </option>
+  </component>
+</project>
