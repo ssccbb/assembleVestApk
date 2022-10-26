@@ -1,7 +1,7 @@
 import os
 
 import constants
-from plugin.FilePlugin import FilePlugin
+from files.plugin.FilePlugin import FilePlugin
 
 
 class HookModulePlugin:

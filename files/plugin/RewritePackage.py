@@ -4,9 +4,9 @@
 import os
 import re
 import constants
-from plugin.FilePlugin import *
-from plugin.DictPlugin import *
-from pro_codeanalysis.Regular import *
+from files.plugin.FilePlugin import *
+from files.plugin.DictPlugin import *
+from files.code.Regular import *
 
 
 class RewritePackage:

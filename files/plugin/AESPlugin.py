@@ -2,7 +2,7 @@ import base64
 import os, constants
 from random import Random
 
-from Cryptodome.Cipher import AES
+from Crypto.Cipher import AES
 
 
 class AESPlugin:

@@ -1,6 +1,6 @@
 # coding=utf-8
-from plugin.JsonPlugin import JsonPlugin
-from plugin.FilePlugin import FilePlugin
+from files.plugin.JsonPlugin import JsonPlugin
+from files.plugin.FilePlugin import FilePlugin
 
 
 class PackageParser(object):

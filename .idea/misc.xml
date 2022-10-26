@@ -5,28 +5,44 @@
     <option name="openedFilesInfos">
       <list>
         <OpenedFileInfo>
-          <option name="caretOffset" value="76" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/excuter.py" />
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/DictPlugin.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="354" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/constants.py" />
+          <option name="caretOffset" value="136" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/FilePlugin.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="8655" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/release.py" />
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/HookModulePlugin.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="6756" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/Process.py" />
+          <option name="caretOffset" value="113" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/JsonPlugin.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="1710" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/encrypt/AES.py" />
+          <option name="caretOffset" value="46" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/KeyboardPlugin.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="589" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/encrypt/AesEncry.py" />
+          <option name="caretOffset" value="15" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/PackagePlugin.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="196" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/RewritePackage.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="3598" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/files/code/Regular.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/SearchPlugin.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/ZipPlugin.py" />
         </OpenedFileInfo>
       </list>
     </option>

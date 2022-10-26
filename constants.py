@@ -1,3 +1,4 @@
+# coding=utf-8
 # 磁盘路径
 path_root = "/root/sung"
 # 本项目路径

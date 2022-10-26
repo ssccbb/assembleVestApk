@@ -1,4 +1,4 @@
-from Cryptodome.Cipher import AES
+from Crypto.Cipher import AES
 from base64 import b64decode, b64encode
 
 BLOCK_SIZE = AES.block_size
