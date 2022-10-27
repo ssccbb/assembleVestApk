@@ -170,6 +170,8 @@ def do_base_change():
     根据需要是否需要做马甲包配置修改
     :return:
     """
+    git = Git(root_path)
+    git.remove_local_change()
     if not need_base_apk:
         return
     json_ = os.path.join(constants.path_ini, "package.json")
