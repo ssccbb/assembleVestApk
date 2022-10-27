@@ -1,3 +1,5 @@
 /.vscode
 /.idea
 /__pycache__
+/virus/junkcode/__pycache__
+/virus/encrypt/__pycache__
