@@ -5,44 +5,40 @@
     <option name="openedFilesInfos">
       <list>
         <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/DictPlugin.py" />
+          <option name="caretOffset" value="653" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/Process.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="136" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/FilePlugin.py" />
+          <option name="caretOffset" value="981" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/junkcode/BuildJunkCode.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/HookModulePlugin.py" />
+          <option name="caretOffset" value="44" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/constants.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="113" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/JsonPlugin.py" />
+          <option name="caretOffset" value="93" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/test.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="46" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/KeyboardPlugin.py" />
+          <option name="caretOffset" value="5955" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/release.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="15" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/PackagePlugin.py" />
+          <option name="caretOffset" value="8763" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/builder.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="196" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/RewritePackage.py" />
+          <option name="caretOffset" value="1015" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/encrypt/AesEncry.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="3598" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/files/code/Regular.py" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/SearchPlugin.py" />
+          <option name="caretOffset" value="1864" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/virus/encrypt/AES.py" />
         </OpenedFileInfo>
         <OpenedFileInfo>
           <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/files/plugin/ZipPlugin.py" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/.gitignore" />
         </OpenedFileInfo>
       </list>
     </option>

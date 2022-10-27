@@ -203,6 +203,7 @@ class PackageHelper:
                              properties_file)
         self.replace_content("HIDE_DIALOG=", str(ini_dict.read_value_with_key("hideDialog")).lower(),
                              properties_file)
+        self.replace_content("org.gradle.jvmargs=", "-Xmx1024m", properties_file)
         FilePlugin.change_str_in_file("./" + constants.old_app_jks,
                                       os.path.join(self.path_android, constants.old_app_jks),
                                       os.path.join(self.path_android, "app/build.gradle"))

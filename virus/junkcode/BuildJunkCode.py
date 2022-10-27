@@ -13,7 +13,7 @@ class Builder:
         print('开始生成垃圾代码....')
         print(f'{package_name}')
         self.package_name = package_name
-        self.junk_dir = os.path.join(constants.path_root, "/android/project/JunkCode")
+        self.junk_dir = os.path.join(constants.path_root, "android/project/JunkCode")
         self.junk_code = os.path.join(self.junk_dir, 'app/build/generated/source/junk')
         self.junk_code_package = self.match_package(self.junk_dir)
         self.target_dir = source_dir
