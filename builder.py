@@ -203,7 +203,12 @@ class PackageHelper:
                              properties_file)
         self.replace_content("HIDE_DIALOG=", str(ini_dict.read_value_with_key("hideDialog")).lower(),
                              properties_file)
-        self.replace_content("org.gradle.jvmargs=", "-Xmx1024m", properties_file)
+        # 服务器只有4g 低了卡gradle高了容易崩溃
+        self.replace_content("org.gradle.jvmargs=", "-Xmx2048m", properties_file)
+        # 守护进程关闭
+        FilePlugin.change_str_in_file("#org.gradle.daemon=false", "org.gradle.daemon=false", properties_file)
+        # 单gradle多任务并行构建关闭
+        FilePlugin.change_str_in_file("#org.gradle.parallel=false", "org.gradle.parallel=false", properties_file)
         FilePlugin.change_str_in_file("./" + constants.old_app_jks,
                                       os.path.join(self.path_android, constants.old_app_jks),
                                       os.path.join(self.path_android, "app/build.gradle"))
