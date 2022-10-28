@@ -74,6 +74,7 @@ def assemble_single_():
     单个生成apk
     :return:
     """
+    check_local_properties()
     ini_package_name = PackageHelper.query_package_name()
     json_parser = PackageParser(ini_package_name, constants.path_ini + "/package.json")
 
@@ -162,6 +163,21 @@ def assemble_single_():
     git = Git(root_path)
     git.remove_local_change()
     print("done!")
+    pass
+
+
+def check_local_properties():
+    local_properties = os.path.join(constants.path_android, "local.properties")
+    sdk_dir = '/usr/local/android/android-sdk'
+    ndk_dir = os.path.join(sdk_dir, 'ndk/android-ndk-r21e')
+    if not os.path.exists(local_properties):
+        os.mknod(local_properties)
+    else:
+        print(f'local.properties 文件存在,跳过创建修改')
+        return
+    file_content = f'sdk.dir = {sdk_dir}\nndk.dir = {ndk_dir}'
+    FilePlugin.wirte_str_to_file(file_content, local_properties)
+    print(f'local.properties 创建成功')
     pass
 
 
