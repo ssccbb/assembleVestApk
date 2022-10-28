@@ -151,7 +151,7 @@ def assemble_single_():
     # os.system("gradle aDR --offline")
     # 因为引入了stringfog在打包前需要clean一下防止解码缓存导致的解码失败
     os.system("gradle clean")
-    os.system("gradle assembleRelease")
+    os.system("gradle --no-daemon assembleRelease")
     # # step 10 : 拷贝文件
     apk_dir = os.path.join(package_helper.path_android, "app/build/outputs/apk/standard/release")
     for sub_file in os.listdir(apk_dir):
