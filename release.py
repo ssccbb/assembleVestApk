@@ -74,6 +74,7 @@ def assemble_single_():
     单个生成apk
     :return:
     """
+    # 每次编译前检查一下local.properties(NDK检查)
     check_local_properties()
     ini_package_name = PackageHelper.query_package_name()
     json_parser = PackageParser(ini_package_name, constants.path_ini + "/package.json")
@@ -156,12 +157,14 @@ def assemble_single_():
     apk_dir = os.path.join(package_helper.path_android, "app/build/outputs/apk/standard/release")
     for sub_file in os.listdir(apk_dir):
         if sub_file.endswith(".apk"):
-            tar_dir = os.path.join(constants.path_self, "output")
+            tar_dir = os.path.join(constants.path_self, "outputs")
             FilePlugin.move_file(os.path.join(apk_dir, sub_file), tar_dir)
             print("apk文件已经转移至文件夹 >>> " + tar_dir)
     print("回退源代码执行中")
     git = Git(root_path)
     git.remove_local_change()
+    # git在回退代码时会把本地文件移除
+    check_local_properties()
     print("done!")
     pass
 
