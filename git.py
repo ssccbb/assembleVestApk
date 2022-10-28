@@ -10,6 +10,12 @@ class Git:
         print(f'Git初始化目录=====》》》{self.root_path}')
         pass
 
+    def fetch_(self):
+        command = f'git fetch'
+        print(f'execute ===>>> {command}')
+        os.chdir(self.root_path)
+        return os.popen(command).read()
+
     def log_(self, count: int):
         command = f'git log -{count}'
         print(f'execute ===>>> {command}')
@@ -31,6 +37,7 @@ class Git:
         pass
 
     def reset_last_(self):
+        self.fetch_()
         terminal_log = self.log_(3)
         if terminal_log is None or len(terminal_log) == 0:
             raise Exception("git log 命令执行无结果")
