@@ -1,8 +1,5 @@
 # coding=utf-8
-import os
-import sys
-
-import constants
+import os, constants, sys
 from files.plugin.FilePlugin import FilePlugin
 from git import Git
 

@@ -1,9 +1,8 @@
-import os
-import time
+# coding=utf-8
+import os, time, constants
 from pathlib import Path
 from files.plugin.FilePlugin import FilePlugin
-
-import constants
+from git import Git
 
 
 def deco(func):
@@ -170,8 +169,10 @@ class PackageHelper:
         properties_file = self.path_android_properties
         self.replace_content("APP_PACKAGENAME=", ini_dict.read_value_with_key("packageName").strip(),
                              properties_file)
-        # self.replace_content("APP_VERSION=", ini_dict.read_value_with_key("versionName").strip(),
-        #                               properties_file)
+        version_name = ini_dict.read_value_with_key("versionName").strip()
+        if len(version_name) > 0:
+            self.replace_content("APP_VERSION=", ini_dict.read_value_with_key("versionName").strip(),
+                                 properties_file)
         # full_channel = ini_dict.read_value_with_key("channel")
         # self.replace_content("MAIN_CHANNEL=", full_channel.split("_")[0], properties_file)
         # self.replace_content("SUB_CHANNEL=", full_channel.split("_")[1], properties_file)
@@ -259,18 +260,12 @@ class PackageHelper:
         FilePlugin.reset_files_md5(os.path.join(self.path_android, "commonlibrary"))
         pass
 
-    @deco
-    def encode_app_string(self):
-        """
-        替换加密字符串（待补全）
-        :return:
-        """
-        pass
-
-    @deco
     def code_rollback(self):
         """
         每次重新打包时做代码回退
         :return:
         """
+        print("回退源代码执行中")
+        git = Git(self.path_android)
+        git.remove_local_change()
         pass

@@ -1,7 +1,5 @@
 # coding=utf-8
-import os, re
-
-import constants
+import os, re, constants
 from builder import PackageHelper
 from files.plugin.FilePlugin import FilePlugin
 from files.plugin.PackagePlugin import PackageParser
@@ -15,9 +13,11 @@ from virus.Process import Process
 # 是否需要在打包时加入报毒混淆
 need_regular = True
 # 是否是基准包
-need_base_apk = True
+need_base_apk = False
+# 统一版本号
+base_version_name = "15.0.00"
 # 需要生成的包名列表
-package_list = ['com.qfhdox.esunca']
+package_list = ['com.bqhflu.vgjyat']
 
 
 def assemble_list_():
@@ -64,7 +64,12 @@ def assemble_list_():
             print(
                 f'包配置文件不存在 >>>> {json_}\n===========================\n包名{package}因配置无效被跳过！\n===========================\n')
             continue
+        # 先回退不必要的动
+        git = Git(constants.path_android)
+        git.remove_local_change()
+        # 基准包配置
         do_base_change()
+        # 打包执行
         assemble_single_()
     pass
 
@@ -143,8 +148,7 @@ def assemble_single_():
     # package_helper.change_md5()
     # step 7 : 修改代码文件(除wxapi)所在包名路径
     package_helper.change_random_package()
-    # step 8 : 加密字符串 & 加入报毒处理方案
-    package_helper.encode_app_string()
+    # step 8 : 加入报毒处理方案
     do_virus_change()
     # step 9 : gradle
     print("开始执行gradle打包...")
@@ -160,9 +164,7 @@ def assemble_single_():
             tar_dir = os.path.join(constants.path_self, "outputs")
             FilePlugin.move_file(os.path.join(apk_dir, sub_file), tar_dir)
             print("apk文件已经转移至文件夹 >>> " + tar_dir)
-    print("回退源代码执行中")
-    git = Git(root_path)
-    git.remove_local_change()
+    package_helper.code_rollback()
     # git在回退代码时会把本地文件移除
     check_local_properties()
     print("done!")
@@ -189,31 +191,40 @@ def do_base_change():
     根据需要是否需要做马甲包配置修改
     :return:
     """
-    git = Git(constants.path_android)
-    git.remove_local_change()
-    if not need_base_apk:
-        return
     json_ = os.path.join(constants.path_ini, "package.json")
     ini_ = FilePlugin.read_str_from_file(json_)
+    # "versionName": "14.9.00"
+    old_version_name = re.compile('"versionName":\\s+".*"').search(ini_).group().strip().split(':')[1].replace('"',
+                                                                                                               '').lstrip().strip()
+    # 为空的话默认代码版本号
+    ini_ = ini_.replace(old_version_name, base_version_name)
+    if not need_base_apk:
+        FilePlugin.wirte_str_to_file(ini_, json_)
+        return
     # "appName": "基准包应用名",
-    old_app_name = re.compile('"appName":\\s+".*"').search(ini_).group().strip().split(':')[1].replace('"', '').lstrip().strip()
+    old_app_name = re.compile('"appName":\\s+".*"').search(ini_).group().strip().split(':')[1].replace('"',
+                                                                                                       '').lstrip().strip()
     new_app_name = '基准包应用名'
     if old_app_name != new_app_name:
         ini_ = ini_.replace(old_app_name, new_app_name)
     # "hideSlogan": false,
-    old_hide_slogan = re.compile('"hideSlogan":\\s+(true|false)').search(ini_).group().strip().split(':')[1].lstrip().strip()
+    old_hide_slogan = re.compile('"hideSlogan":\\s+(true|false)').search(ini_).group().strip().split(':')[
+        1].lstrip().strip()
     if old_hide_slogan != 'true':
         ini_ = ini_.replace(f'"hideSlogan": {old_hide_slogan}', f'"hideSlogan": true')
     # "hideSetting": false,
-    old_hide_setting = re.compile('"hideSetting":\\s+(true|false)').search(ini_).group().strip().split(':')[1].lstrip().strip()
+    old_hide_setting = re.compile('"hideSetting":\\s+(true|false)').search(ini_).group().strip().split(':')[
+        1].lstrip().strip()
     if old_hide_setting != 'true':
         ini_ = ini_.replace(f'"hideSetting": {old_hide_setting}', f'"hideSetting": true')
     # "hideGuide": false,
-    old_hide_guide = re.compile('"hideGuide":\\s+(true|false)').search(ini_).group().strip().split(':')[1].lstrip().strip()
+    old_hide_guide = re.compile('"hideGuide":\\s+(true|false)').search(ini_).group().strip().split(':')[
+        1].lstrip().strip()
     if old_hide_guide != 'true':
         ini_ = ini_.replace(f'"hideGuide": {old_hide_guide}', f'"hideGuide": true')
     # "hideTeen": false,
-    old_hide_teen = re.compile('"hideTeen":\\s+(true|false)').search(ini_).group().strip().split(':')[1].lstrip().strip()
+    old_hide_teen = re.compile('"hideTeen":\\s+(true|false)').search(ini_).group().strip().split(':')[
+        1].lstrip().strip()
     if old_hide_teen != 'true':
         ini_ = ini_.replace(f'"hideTeen": {old_hide_teen}', f'"hideTeen": true')
     FilePlugin.wirte_str_to_file(ini_, json_)
@@ -243,5 +254,4 @@ def do_virus_change():
 
 if __name__ == '__main__':
     assemble_list_()
-    # assemble_single_()
     pass
