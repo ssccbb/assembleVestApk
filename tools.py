@@ -15,7 +15,7 @@ class Entry:
             os.mknod(local_properties)
         else:
             print(f'local.properties 文件存在,跳过创建修改')
-            sys.exit(0)
+            return
         file_content = f'sdk.dir = {sdk_dir}\nndk.dir = {ndk_dir}'
         FilePlugin.wirte_str_to_file(file_content, local_properties)
         print(f'local.properties 创建成功')
