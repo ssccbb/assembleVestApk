@@ -28,7 +28,7 @@ class Notice:
         pass
 
     @staticmethod
-    def build_content(wechat: bool, base_apk: bool, file: str, package: str, version: str, others: str = None):
+    def build_content(wechat: bool, base_apk: bool, file: str, package: str, app_name: str, version: str, others: str = None):
         """
         钉钉格式 '{"msgtype": "markdown","markdown":{"text":"markdown"}}'
         微信格式 '{"msgtype": "markdown","markdown":{"content":"markdown"}}'
@@ -39,9 +39,10 @@ class Notice:
             base_ = base_.replace("text", "content")
         # print(base_)
         content = f'马甲包构建脚本执行完成！包相关信息如下：' \
-                  f'\n> - 基准包类型：{base_apk}' \
+                  f'\n> - 包类型：{"基准包" if base_apk else "推广包"}' \
                   f'\n> - 文件名：{file}' \
                   f'\n> - 包名： {package}' \
+                  f'\n> - 应用名： {app_name}' \
                   f'\n> - 版本号：{version}' \
                   f'\n> - 构建时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}' \
                   f'\n> - 备注：{others}'

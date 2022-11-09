@@ -1,0 +1,28 @@
+{
+  "com.vcgqmj.zsnkxtao": {
+    "packageName": "com.vcgqmj.zsnkxtao",
+    "appName": "基准包应用名",
+    "versionName": "14.8.00",
+    "versionCode": "148000",
+    "channel": "BetaAPPHuajian_1",
+    "ydKey": "036bc91a17c74e678f5f7f06bcf2cfff",
+    "qqKey": [
+      "102022577",
+      "zsY0OisoX7UdifV7"
+    ],
+    "wechatKey": [
+      "wxf8bd9c59c880b6b9",
+      "8496fc0ea0fd284d80034db79759cb3c"
+    ],
+    "openinstallKey": "z5yc32",
+    "hideSlogan": true,
+    "hideOneYuan": false,
+    "hideQQLogin": false,
+    "hideWXLogin": false,
+    "hideSetting": true,
+    "hideGuide": true,
+    "hideTeen": true,
+    "hidePermissionDialog": true,
+    "hideDialog": true
+  }
+}

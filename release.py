@@ -1,5 +1,7 @@
 # coding=utf-8
 import os, re, constants
+import sys
+
 from builder import PackageHelper
 from files.plugin.FilePlugin import FilePlugin
 from files.plugin.PackagePlugin import PackageParser
@@ -18,10 +20,7 @@ need_base_apk = True
 base_version_name = ""
 # 需要生成的包名列表
 package_list = [
-    'com.qijre.huzwab',
-    'com.rhmjfx.toygpn',
-    'com.rnfs.dmgla',
-    'com.rxgh.dobzkp'
+    'com.vcgqmj.zsnkxtao'
 ]
 
 
@@ -164,6 +163,10 @@ def assemble_single_():
     os.system("gradle --no-daemon assembleRelease")
     # # step 10 : 拷贝文件
     apk_dir = os.path.join(package_helper.path_android, "app/build/outputs/apk/standard/release")
+    if not os.path.exists(apk_dir):
+        package_helper.notice_bot_error(package_name)
+        print("ERROR! >>> 找不到apk文件")
+        sys.exit(99)
     for sub_file in os.listdir(apk_dir):
         if sub_file.endswith(".apk"):
             apk_file = os.path.join(apk_dir, sub_file)
@@ -171,7 +174,7 @@ def assemble_single_():
             public_apk = os.path.join(constants.path_zhouqipa_cn_files, sub_file)
             FilePlugin.copy_file(apk_file, public_apk)
             # bot通知
-            package_helper.notice_bot(need_base_apk, sub_file, package_name, base_version_name, None)
+            package_helper.notice_bot(need_base_apk, sub_file, package_name, app_name, base_version_name, None)
             # 项目内apk
             tar_dir = os.path.join(constants.path_self, "outputs")
             FilePlugin.move_file(apk_file, tar_dir)
@@ -179,7 +182,8 @@ def assemble_single_():
     package_helper.code_rollback()
     # git在回退代码时会把本地文件移除
     check_local_properties()
-    print("done!")
+    print("DONE!")
+    sys.exit(0)
     pass
 
 

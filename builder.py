@@ -179,7 +179,7 @@ class PackageHelper:
         # self.replace_content("MAIN_CHANNEL=", full_channel.split("_")[0], properties_file)
         # self.replace_content("SUB_CHANNEL=", full_channel.split("_")[1], properties_file)
         self.replace_content("YD_APPID=", ini_dict.read_value_with_key("ydKey"), properties_file)
-        self.replace_content("CHROME_PAY=", is_base_apk, properties_file)
+        self.replace_content("CHROME_PAY=", 'true' if is_base_apk else 'false', properties_file)
         qq_ini = ini_dict.read_value_with_key("qqKey")
         self.replace_content("QQ_APPID=", qq_ini[0].strip(), properties_file)
         self.replace_content("QQ_KEY=", qq_ini[1].strip(), properties_file)
@@ -274,16 +274,28 @@ class PackageHelper:
         pass
 
     @staticmethod
-    def notice_bot(base_apk: bool, file: str, package: str, version: str, others: str):
+    def notice_bot(base_apk: bool, file: str, package: str, app_name: str, version: str, others: str):
         try:
             notice = Notice()
             if version is None or len(version) == 0:
                 if file.count("_") > 0:
                     version = file.split("_")[1] if file.split("_")[1].startswith("v") else ""
             notice.notice_wechat(WebHook.url_wechat_bot,
-                                 Notice.build_content(True, base_apk, file, package, version, others))
+                                 Notice.build_content(True, base_apk, file, package, app_name, version, others))
             notice.notice_ding_talk(WebHook.url_ding_talk_bot,
-                                    Notice.build_content(False, base_apk, file, package, version, others))
+                                    Notice.build_content(False, base_apk, file, package, app_name, version, others))
+        finally:
+            print('通知发送出错')
+        pass
+
+    @staticmethod
+    def notice_bot_error(package_name: str):
+        try:
+            notice = Notice()
+            content = '{"msgtype": "markdown","markdown":{"content":"> buildtime 马甲包构建脚本执行失败！\n> 当前包名 >>> packagename"}}'
+            content = content.replace('packagename', package_name)
+            content = content.replace('buildtime', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+            notice.notice_wechat(WebHook.url_wechat_bot, content)
         finally:
             print('通知发送出错')
         pass
