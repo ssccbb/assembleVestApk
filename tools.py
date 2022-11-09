@@ -46,12 +46,18 @@ if __name__ == '__main__':
     """
     工具集合入口，自定义选择执行脚本
     """
+    print('----------------------------------------------')
+    print('以下是可供选择的项：')
     print(f'【1】重置huajian-android内的本地properties文件'.join(("\033[7m", "\033[0m")))
     print(f'【2】回退huajian-android所有变更代码'.join(("\033[7m", "\033[0m")))
     print(f'【3】拉取huajian-android项目hjvest_user_safe分支最新代码'.join(("\033[7m", "\033[0m")))
     print(f'【4】执行huajian-android项目gradle.clean'.join(("\033[7m", "\033[0m")))
+    print('>>>')
+    print(f'不输入内容按Enter退出')
     try:
+        print('----------------------------------------------')
         inp = int(input('请输入执行选项：'))
+        print('----------------------------------------------')
         if inp == 1:
             Entry.reset_properties()
         elif inp == 2:
@@ -60,6 +66,8 @@ if __name__ == '__main__':
             Entry.pull_origin_code('hjvest_user_safe')
         elif inp == 4:
             Entry.gradle_clean()
+        else:
+            sys.exit(0)
     except Exception as e:
         sys.exit(0)
     pass

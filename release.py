@@ -13,13 +13,15 @@ from virus.Process import Process
 # 是否需要在打包时加入报毒混淆
 need_regular = True
 # 是否是基准包
-need_base_apk = False
+need_base_apk = True
 # 统一版本号
 base_version_name = ""
 # 需要生成的包名列表
 package_list = [
-    'com.syzdmsc.hjbm',
-    'com.bqhflu.vgjyat'
+    'com.qijre.huzwab',
+    'com.rhmjfx.toygpn',
+    'com.rnfs.dmgla',
+    'com.rxgh.dobzkp'
 ]
 
 
