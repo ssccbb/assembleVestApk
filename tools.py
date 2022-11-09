@@ -37,6 +37,7 @@ class Entry:
     @staticmethod
     def gradle_clean():
         Entry.reset_properties()
+        os.chdir(constants.path_android)
         print(os.system("gradle clean"))
         pass
 
