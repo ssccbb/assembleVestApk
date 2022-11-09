@@ -27,6 +27,19 @@ class Entry:
         git.remove_local_change()
         pass
 
+    @staticmethod
+    def pull_origin_code(branch: str):
+        git = Git(constants.path_android)
+        git.remove_local_change()
+        git.pull_(branch)
+        pass
+    
+    @staticmethod
+    def gradle_clean():
+        Entry.reset_properties()
+        print(os.system("gradle clean"))
+        pass
+
 
 if __name__ == '__main__':
     """
@@ -34,12 +47,18 @@ if __name__ == '__main__':
     """
     print(f'【1】重置huajian-android内的本地properties文件'.join(("\033[7m", "\033[0m")))
     print(f'【2】回退huajian-android所有变更代码'.join(("\033[7m", "\033[0m")))
+    print(f'【3】拉取huajian-android项目hjvest_user_safe分支最新代码'.join(("\033[7m", "\033[0m")))
+    print(f'【4】执行huajian-android项目gradle.clean'.join(("\033[7m", "\033[0m")))
     try:
         inp = int(input('请输入执行选项：'))
         if inp == 1:
             Entry.reset_properties()
         elif inp == 2:
             Entry.rollback()
+        elif inp == 3:
+            Entry.pull_origin_code('hjvest_user_safe')
+        elif inp == 4:
+            Entry.gradle_clean()
     except Exception as e:
         sys.exit(0)
     pass

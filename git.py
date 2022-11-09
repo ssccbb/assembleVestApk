@@ -36,6 +36,13 @@ class Git:
         os.system(command)
         pass
 
+    def pull_(self, branch: str):
+        command = f'git pull origin {branch}'
+        print(f'execute ===>>> {command}')
+        os.chdir(self.root_path)
+        os.system(command)
+        pass
+
     def reset_last_(self):
         self.fetch_()
         terminal_log = self.log_(3)

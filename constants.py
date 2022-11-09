@@ -13,7 +13,7 @@ path_android_code = path_android + "/app/src/main/java"
 # 安卓项目res路径
 path_android_res = path_android + "/app/src/main/res"
 # 安卓项目包路径
-path_android_package = path_android + "/app/src/main/java/com/syzdmsc/hjbm"
+path_android_package = path_android + "/app/src/main/java/com/yr/jksdemo"
 # gradle.properties配置参数文件路径
 path_android_properties = path_android + "/gradle.properties"
 # 字符串文件路径
@@ -28,10 +28,13 @@ old_app_jks = "yr_release_key.jks"
 # 代码内旧的应用包名
 old_app_package = "com.yr.jksdemo"
 # 代码内旧的微信回调路径
-old_app_wxapi_path = "com.syzdmsc.hjbm"
+old_app_wxapi_path = "com.yr.jksdemo"
 
 # SDK路径
 path_android_sdk = "/usr/local/android/android-sdk"
 
 # 马甲包报毒批处理工具
 path_vest_virus = path_root + "/pro_vestvirus"
+
+# 外网共享地址(存到挂载盘防止系统盘过满)(服务器创建软链接到/www/wwwroot/zhouqipa.cn/files/apks)
+path_zhouqipa_cn_files = "/data/backup/apks"

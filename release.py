@@ -15,9 +15,12 @@ need_regular = True
 # 是否是基准包
 need_base_apk = False
 # 统一版本号
-base_version_name = "15.0.00"
+base_version_name = ""
 # 需要生成的包名列表
-package_list = ['com.bqhflu.vgjyat']
+package_list = [
+    'com.syzdmsc.hjbm',
+    'com.bqhflu.vgjyat'
+]
 
 
 def assemble_list_():
@@ -143,7 +146,7 @@ def assemble_single_():
         # step 4 ：更改应用包名以及wxapi回调路径包名
         package_helper.change_app_package(package_name)
         # step 5 ：更改其他配置相关
-        package_helper.change_app_ini(json_parser)
+        package_helper.change_app_ini(need_base_apk, json_parser)
     # step 6 : 修改图片以及文本文件md5 （do_virus_change()方法内处理）
     # package_helper.change_md5()
     # step 7 : 修改代码文件(除wxapi)所在包名路径
@@ -161,8 +164,15 @@ def assemble_single_():
     apk_dir = os.path.join(package_helper.path_android, "app/build/outputs/apk/standard/release")
     for sub_file in os.listdir(apk_dir):
         if sub_file.endswith(".apk"):
+            apk_file = os.path.join(apk_dir, sub_file)
+            # 外网apk
+            public_apk = os.path.join(constants.path_zhouqipa_cn_files, sub_file)
+            FilePlugin.copy_file(apk_file, public_apk)
+            # bot通知
+            package_helper.notice_bot(need_base_apk, sub_file, package_name, base_version_name, None)
+            # 项目内apk
             tar_dir = os.path.join(constants.path_self, "outputs")
-            FilePlugin.move_file(os.path.join(apk_dir, sub_file), tar_dir)
+            FilePlugin.move_file(apk_file, tar_dir)
             print("apk文件已经转移至文件夹 >>> " + tar_dir)
     package_helper.code_rollback()
     # git在回退代码时会把本地文件移除

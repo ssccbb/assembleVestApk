@@ -2,6 +2,7 @@
 import os, time, constants
 from pathlib import Path
 from files.plugin.FilePlugin import FilePlugin
+from files.plugin.Notification import Notice, WebHook
 from git import Git
 
 
@@ -33,7 +34,7 @@ class PackageHelper:
         # 安卓项目res路径
         self.path_android_res = self.path_android + "/app/src/main/res"
         # 安卓项目包路径
-        self.path_android_package = self.path_android + "/app/src/main/java/com/syzdmsc/hjbm"
+        self.path_android_package = self.path_android + "/app/src/main/java/com/yr/jksdemo"
         # gradle.properties配置参数文件路径
         self.path_android_properties = self.path_android + "/gradle.properties"
         # 字符串文件路径
@@ -159,9 +160,10 @@ class PackageHelper:
         """
         pass
 
-    def change_app_ini(self, ini_dict):
+    def change_app_ini(self, is_base_apk: bool, ini_dict):
         """
         修改其他配置参数
+        :param is_base_apk: 是否是基准（影响h5跳转方式）
         :param ini_dict:
         :return:
         """
@@ -177,6 +179,7 @@ class PackageHelper:
         # self.replace_content("MAIN_CHANNEL=", full_channel.split("_")[0], properties_file)
         # self.replace_content("SUB_CHANNEL=", full_channel.split("_")[1], properties_file)
         self.replace_content("YD_APPID=", ini_dict.read_value_with_key("ydKey"), properties_file)
+        self.replace_content("CHROME_PAY=", is_base_apk, properties_file)
         qq_ini = ini_dict.read_value_with_key("qqKey")
         self.replace_content("QQ_APPID=", qq_ini[0].strip(), properties_file)
         self.replace_content("QQ_KEY=", qq_ini[1].strip(), properties_file)
@@ -205,7 +208,7 @@ class PackageHelper:
         self.replace_content("HIDE_DIALOG=", str(ini_dict.read_value_with_key("hideDialog")).lower(),
                              properties_file)
         # 服务器只有4g 低了卡gradle高了容易崩溃
-        self.replace_content("org.gradle.jvmargs=", "-Xmx1536m", properties_file)
+        self.replace_content("org.gradle.jvmargs=", "-Xmx1248m", properties_file)
         # 守护进程关闭
         FilePlugin.change_str_in_file("#org.gradle.daemon=false", "org.gradle.daemon=false", properties_file)
         # 单gradle多任务并行构建关闭
@@ -268,4 +271,19 @@ class PackageHelper:
         print("回退源代码执行中")
         git = Git(self.path_android)
         git.remove_local_change()
+        pass
+
+    @staticmethod
+    def notice_bot(base_apk: bool, file: str, package: str, version: str, others: str):
+        try:
+            notice = Notice()
+            if version is None or len(version) == 0:
+                if file.count("_") > 0:
+                    version = file.split("_")[1] if file.split("_")[1].startswith("v") else ""
+            notice.notice_wechat(WebHook.url_wechat_bot,
+                                 Notice.build_content(True, base_apk, file, package, version, others))
+            notice.notice_ding_talk(WebHook.url_ding_talk_bot,
+                                    Notice.build_content(False, base_apk, file, package, version, others))
+        finally:
+            print('通知发送出错')
         pass
