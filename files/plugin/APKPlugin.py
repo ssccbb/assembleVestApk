@@ -80,11 +80,12 @@ class APKPlugin:
             signer_apk_file = apk_file.replace(".apk", "_sign.apk")
         shutil.copyfile(apk_file, signer_apk_file)
         print("开始为apk签名...")
-        path_apk_signer = os.path.join(constants.path_self, "jar/apksigner.jar")
+        path_apk_signer = os.path.join(constants.path_self, "files/jar/apksigner.jar")
         cmd_signer = f'java -jar {path_apk_signer} -keystore {signer_file} {signer_content} {signer_apk_file}'
         if os.system(cmd_signer) == 0:
             print("成功为apk签名")
             os.remove("sign.db")
+            return signer_apk_file
         else:
             raise Exception("apk签名失败")
 

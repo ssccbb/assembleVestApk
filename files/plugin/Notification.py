@@ -28,7 +28,7 @@ class Notice:
         pass
 
     @staticmethod
-    def build_content(wechat: bool, base_apk: bool, file: str, package: str, app_name: str, version: str, others: str = None):
+    def build_content(wechat: bool, base_apk: bool, file: str, package: str, app_name: str, version: str, jiagu: bool, sign: bool, others: str = None):
         """
         钉钉格式 '{"msgtype": "markdown","markdown":{"text":"markdown"}}'
         微信格式 '{"msgtype": "markdown","markdown":{"content":"markdown"}}'
@@ -44,6 +44,8 @@ class Notice:
                   f'\n> - 包名： {package}' \
                   f'\n> - 应用名： {app_name}' \
                   f'\n> - 版本号：{version}' \
+                  f'\n> - 加固状态：{"易盾加固" if jiagu else "未加固"}' \
+                  f'\n> - 签名：{"已签名" if sign else "未签名"}' \
                   f'\n> - 构建时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}' \
                   f'\n> - 备注：{others}'
         # 固定外网访问

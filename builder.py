@@ -1,9 +1,13 @@
 # coding=utf-8
-import os, time, constants
+import time, constants, sys
 from pathlib import Path
-from files.plugin.FilePlugin import FilePlugin
 from files.plugin.Notification import Notice, WebHook
-from git import Git
+from files.plugin.FilePlugin import FilePlugin
+from files.plugin.PackagePlugin import PackageParser
+from files.plugin.git import *
+from virus.Process import Process
+from files.ydjiagu.YDJiagu import *
+from tools import Entry
 
 
 def deco(func):
@@ -24,7 +28,297 @@ def deco(func):
     return wrapper
 
 
+class ReleaseBuilder:
+
+    def __init__(self, regular: bool, base: bool, version: str, packages: dict):
+        """
+        构建流程
+        渠道、版本、openinstall
+        是默认不写进打包配置的所以在package.json内可不做修改
+        """
+        # 是否需要在打包时加入报毒混淆
+        self.need_regular = regular
+        # 是否是基准包
+        self.need_base_apk = base
+        # 统一版本号
+        self.base_version_name = version
+        # 需要生成的包名列表
+        self.package_list = packages
+        # 签名文件
+        self.jks_path = ''
+        pass
+
+    def assemble_list_(self):
+        """
+        批量生成apk
+        :return:
+        """
+        for package in self.package_list.keys():
+            # 清空ini文件夹
+            print(f'清空配置文件夹 >>>>')
+            for sub in os.listdir(constants.path_ini):
+                FilePlugin.remove_path_file(os.path.join(constants.path_ini, sub))
+            # 开始单个打包
+            print(f'开始单个打包=====包名{package}')
+            back_path = os.path.join(constants.path_self, f'files/jks/{package}')
+            if not os.path.exists(back_path):
+                print(
+                    f'包名配置备份文件不存在 >>>> {back_path}\n===========================\n包名{package}因配置无效被跳过！\n===========================\n')
+                continue
+            for path in os.listdir(back_path):
+                real_path = os.path.join(back_path, path)
+                tar_path = os.path.join(constants.path_ini, path)
+                if os.path.isfile(real_path):
+                    # 复制图标以及json文件
+                    FilePlugin.copy_file(real_path, tar_path)
+                elif os.path.isdir(real_path):
+                    if not os.path.exists(tar_path):
+                        # 创建 ini/*** 包名文件夹
+                        FilePlugin.mkdir(tar_path)
+                    for file in os.listdir(real_path):
+                        if os.path.isfile(os.path.join(real_path, file)):
+                            # 复制jks
+                            FilePlugin.copy_file(os.path.join(real_path, file), os.path.join(tar_path, file))
+            jks_ = os.path.join(constants.path_ini, package + "/yr_release_key.jks")
+            icon_ = os.path.join(constants.path_ini, "app_icon.png")
+            json_ = os.path.join(constants.path_ini, "package.json")
+            if not os.path.exists(icon_):
+                FilePlugin.copy_file(os.path.join(constants.path_self, 'res/app_icon.png'), icon_)
+            if not os.path.exists(jks_):
+                print(
+                    f'jks文件不存在 >>>> {jks_}\n===========================\n包名{package}因配置无效被跳过！\n===========================\n')
+                continue
+            if not os.path.exists(json_):
+                print(
+                    f'包配置文件不存在 >>>> {json_}\n===========================\n包名{package}因配置无效被跳过！\n===========================\n')
+                continue
+            # 先回退不必要的动
+            git = Git(constants.path_android)
+            git.remove_local_change()
+            # 基准包配置
+            self.do_base_change()
+            # 打包执行
+            self.assemble_single_()
+        pass
+
+    def assemble_single_(self):
+        """
+        单个生成apk
+        :return:
+        """
+        # 每次编译前检查一下local.properties(NDK检查)
+        self.check_local_properties()
+        ini_package_name = PackageHelper.query_package_name()
+        json_parser = PackageParser(ini_package_name, constants.path_ini + "/package.json")
+
+        package_name = json_parser.read_value_with_key("packageName")
+        app_name = json_parser.read_value_with_key("appName")
+        version_name = json_parser.read_value_with_key("versionName")
+        version_code = json_parser.read_value_with_key("versionCode")
+        channel = json_parser.read_value_with_key("channel")
+
+        yd_key = json_parser.read_value_with_key("ydKey")
+        qq_ini = json_parser.read_value_with_key("qqKey")
+        qq_appid = qq_ini[0]
+        qq_appkey = qq_ini[1]
+        wechat_ini = json_parser.read_value_with_key("wechatKey")
+        wechat_appid = wechat_ini[0]
+        wechat_appkey = wechat_ini[1]
+        op_key = json_parser.read_value_with_key("openinstallKey")
+
+        hide_slogan = json_parser.read_value_with_key("hideSlogan")
+        hide_one_yuan = json_parser.read_value_with_key("hideOneYuan")
+        hide_qq_login = json_parser.read_value_with_key("hideQQLogin")
+        hide_wx_login = json_parser.read_value_with_key("hideWXLogin")
+        hide_setting = json_parser.read_value_with_key("hideSetting")
+        hide_guide = json_parser.read_value_with_key("hideGuide")
+        hide_teen = json_parser.read_value_with_key("hideTeen")
+        hide_permission_dialog = json_parser.read_value_with_key("hidePermissionDialog")
+        hide_dialog = json_parser.read_value_with_key("hideDialog")
+
+        print("开始打包前请核对以下相关包信息:")
+        print(" ------- 包名：" + package_name)
+        print(" ------- 应用名：" + app_name)
+        print(" ------- 对外版本号：" + version_name)
+        print(" ------- 对内版本号：" + version_code)
+        print(" ------- 渠道：" + channel)
+        print(" ------- 易盾一键登录：" + yd_key)
+        print(" ------- QQ appid：" + qq_appid)
+        print(" ------- QQ key：" + qq_appkey)
+        print(" ------- 微信 appid：" + wechat_appid)
+        print(" ------- 微信 key：" + wechat_appkey)
+        print(" ------- OP：" + op_key)
+        print(" ------- 隐藏包名相关UI：" + str(hide_slogan))
+        print(" ------- 隐藏一元充值弹窗：" + str(hide_one_yuan))
+        print(" ------- 隐藏QQ登录：" + str(hide_qq_login))
+        print(" ------- 隐藏微信登录：" + str(hide_wx_login))
+        print(" ------- 隐藏部分设置：" + str(hide_setting))
+        print(" ------- 隐藏引导页：" + str(hide_guide))
+        print(" ------- 隐藏青少年相关：" + str(hide_teen))
+        print(" ------- 隐藏权限弹窗说明：" + str(hide_permission_dialog))
+        print(" ------- 隐藏部分充值弹窗：" + str(hide_dialog))
+
+        root_path = constants.path_android
+        package_helper = PackageHelper(root_path)
+        if not package_helper.check_file_change_status(ini_package_name):
+            # step 1 ：替换应用名
+            package_helper.change_app_name(app_name)
+            # step 2 ：替换应用图标
+            package_helper.change_app_icon(constants.path_ini + "/" + constants.old_app_icon)
+            # step 3 ：替换应用签名文件
+            self.jks_path = constants.path_ini + "/" + package_name + "/" + constants.old_app_jks
+            package_helper.change_app_jks(self.jks_path)
+            # step 4 ：更改应用包名以及wxapi回调路径包名
+            package_helper.change_app_package(package_name)
+            # step 5 ：更改其他配置相关
+            package_helper.change_app_ini(self.need_base_apk, json_parser)
+        # step 6 : 修改图片以及文本文件md5 （do_virus_change()方法内处理）
+        # package_helper.change_md5()
+        # step 7 : 修改代码文件(除wxapi)所在包名路径
+        package_helper.change_random_package()
+        # step 8 : 加入报毒处理方案
+        self.do_virus_change()
+        # step 9 : gradle
+        print("开始执行gradle打包...")
+        os.chdir(package_helper.path_android)
+        # os.system("gradle aDR --offline")
+        # 因为引入了stringfog在打包前需要clean一下防止解码缓存导致的解码失败
+        os.system("gradle clean")
+        os.system("gradle --no-daemon assembleRelease")
+        # # step 10 : 拷贝文件
+        apk_dir = os.path.join(package_helper.path_android, "app/build/outputs/apk/standard/release")
+        if not os.path.exists(apk_dir):
+            package_helper.notice_bot_error(package_name)
+            print("ERROR! >>> 找不到apk文件")
+            sys.exit(99)
+        # 开始处理生成的apk
+        for sub_file in os.listdir(apk_dir):
+            if sub_file.endswith(".apk"):
+                apk_file = os.path.join(apk_dir, sub_file)
+                # 拷贝至外网apk
+                public_apk = os.path.join(constants.path_zhouqipa_cn_files, sub_file)
+                FilePlugin.copy_file(apk_file, public_apk)
+                # 加固签名
+                yd_sign_file = package_helper.yd_jiagu(public_apk, self.jks_path, constants.path_zhouqipa_cn_files)
+                # bot通知
+                jiagu_status = False
+                if yd_sign_file is not None:
+                    yd_paths = yd_sign_file.split('/')
+                    sub_file = yd_paths[len(yd_paths) - 1]  # 存在加固apk的话使用加固apk通知
+                    jiagu_status = True
+                package_helper.notice_bot(self.need_base_apk,  # 是否基准包
+                                          sub_file,  # 文件名
+                                          package_name,  # 包名
+                                          app_name,  # 应用名
+                                          self.base_version_name,  # 版本号
+                                          jiagu_status,  # 加固状态
+                                          True,  # 签名状态（默认打包带签名配置，加固也必定会签名）
+                                          self.package_list.get(package_name))  # ini内的备注信息
+                # 项目内apk
+                tar_dir = os.path.join(constants.path_self, "outputs")
+                FilePlugin.move_file(apk_file, tar_dir)
+                print("apk文件已经转移至文件夹 >>> " + tar_dir)
+        # 开始回退代码
+        package_helper.code_rollback()
+        # git在回退代码时会把本地文件移除（此操作仅仅是为了下次gradle执行方便,不做也可以）
+        self.check_local_properties()
+        print("DONE!")
+        sys.exit(0)
+        pass
+
+    def check_local_properties(self):
+        local_properties = os.path.join(constants.path_android, "local.properties")
+        sdk_dir = '/usr/local/android/android-sdk'
+        ndk_dir = os.path.join(sdk_dir, 'ndk/android-ndk-r21e')
+        if not os.path.exists(local_properties):
+            os.mknod(local_properties)
+        else:
+            print(f'local.properties 文件存在,跳过创建修改')
+            return
+        file_content = f'sdk.dir = {sdk_dir}\nndk.dir = {ndk_dir}'
+        FilePlugin.wirte_str_to_file(file_content, local_properties)
+        print(f'local.properties 创建成功')
+        pass
+
+    def do_base_change(self):
+        """
+        根据需要是否需要做马甲包配置修改
+        :return:
+        """
+        json_ = os.path.join(constants.path_ini, "package.json")
+        ini_ = FilePlugin.read_str_from_file(json_)
+        # "versionName": "14.9.00"
+        old_version_name = re.compile('"versionName":\\s+".*"').search(ini_).group().strip().split(':')[1].replace('"',
+                                                                                                                   '').lstrip().strip()
+        # 为空的话默认代码版本号
+        ini_ = ini_.replace(old_version_name, self.base_version_name)
+        if not self.need_base_apk:
+            FilePlugin.wirte_str_to_file(ini_, json_)
+            return
+        # "appName": "基准包应用名",
+        old_app_name = re.compile('"appName":\\s+".*"').search(ini_).group().strip().split(':')[1].replace('"',
+                                                                                                           '').lstrip().strip()
+        new_app_name = '基准包应用名'
+        if old_app_name != new_app_name:
+            ini_ = ini_.replace(old_app_name, new_app_name)
+        # "hideSlogan": false,
+        old_hide_slogan = re.compile('"hideSlogan":\\s+(true|false)').search(ini_).group().strip().split(':')[
+            1].lstrip().strip()
+        if old_hide_slogan != 'true':
+            ini_ = ini_.replace(f'"hideSlogan": {old_hide_slogan}', f'"hideSlogan": true')
+        # "hideSetting": false,
+        old_hide_setting = re.compile('"hideSetting":\\s+(true|false)').search(ini_).group().strip().split(':')[
+            1].lstrip().strip()
+        if old_hide_setting != 'true':
+            ini_ = ini_.replace(f'"hideSetting": {old_hide_setting}', f'"hideSetting": true')
+        # "hideGuide": false,
+        old_hide_guide = re.compile('"hideGuide":\\s+(true|false)').search(ini_).group().strip().split(':')[
+            1].lstrip().strip()
+        if old_hide_guide != 'true':
+            ini_ = ini_.replace(f'"hideGuide": {old_hide_guide}', f'"hideGuide": true')
+        # "hideTeen": false,
+        old_hide_teen = re.compile('"hideTeen":\\s+(true|false)').search(ini_).group().strip().split(':')[
+            1].lstrip().strip()
+        if old_hide_teen != 'true':
+            ini_ = ini_.replace(f'"hideTeen": {old_hide_teen}', f'"hideTeen": true')
+        FilePlugin.wirte_str_to_file(ini_, json_)
+        pass
+
+    def do_virus_change(self):
+        """
+        根据需要是否需要做报毒相关处理
+        :return:
+        """
+        if not self.need_regular:
+            return
+        process = Process(constants.path_android)
+        # 移除无用string
+        process.remove_unuse_strings_in_xml()
+        # 垃圾代码
+        process.build_junk_code_with_gradle()
+        # 重写用到的加密后字符串
+        process.rewrite_encrypt_string()
+        # 重写stringfog密钥
+        process.rewrite_string_fog()
+        # 更改可编辑文件md5
+        process.change_file_md5()
+        pass
+
+    def yd_jiagu(self):
+        """
+        易盾加固
+        :return:
+        """
+        # jiagu.sh 加固脚本
+        # sign.py 签名脚本
+        pass
+
+
 class PackageHelper:
+    """
+    构建工具类
+    """
+
     def __init__(self, path: str):
         print("inti package helper")
         # 安卓项目根路径
@@ -208,7 +502,7 @@ class PackageHelper:
         self.replace_content("HIDE_DIALOG=", str(ini_dict.read_value_with_key("hideDialog")).lower(),
                              properties_file)
         # 服务器只有4g 低了卡gradle高了容易崩溃
-        self.replace_content("org.gradle.jvmargs=", "-Xmx1248m", properties_file)
+        self.replace_content("org.gradle.jvmargs=", "-Xmx1024m", properties_file)
         # 守护进程关闭
         FilePlugin.change_str_in_file("#org.gradle.daemon=false", "org.gradle.daemon=false", properties_file)
         # 单gradle多任务并行构建关闭
@@ -273,17 +567,30 @@ class PackageHelper:
         git.remove_local_change()
         pass
 
+    def yd_jiagu(self, file, jks, output):
+        print(f'接收到的apk文件 >>> {file}')
+        print(f'接收到的jks文件 >>> {jks}')
+        print(f'接收到的输出路径 >>> {output}')
+        print(f'开始加固apk....')
+        out_file = Jiagu.jiagu(file, jks, output)
+        if out_file is not None:
+            return Entry.sign_apk(out_file, jks, None)
+        pass
+
     @staticmethod
-    def notice_bot(base_apk: bool, file: str, package: str, app_name: str, version: str, others: str):
+    def notice_bot(base_apk: bool, file: str, package: str, app_name: str, version: str, jiagu: bool, sign: bool,
+                   others: str):
         try:
             notice = Notice()
             if version is None or len(version) == 0:
                 if file.count("_") > 0:
                     version = file.split("_")[1] if file.split("_")[1].startswith("v") else ""
             notice.notice_wechat(WebHook.url_wechat_bot,
-                                 Notice.build_content(True, base_apk, file, package, app_name, version, others))
+                                 Notice.build_content(True, base_apk, file, package, app_name, version, jiagu, sign,
+                                                      others))
             notice.notice_ding_talk(WebHook.url_ding_talk_bot,
-                                    Notice.build_content(False, base_apk, file, package, app_name, version, others))
+                                    Notice.build_content(False, base_apk, file, package, app_name, version, jiagu, sign,
+                                                         others))
         finally:
             print('通知发送出错')
         pass
