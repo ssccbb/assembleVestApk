@@ -485,6 +485,9 @@ class PackageHelper:
         self.replace_content("WECHAT_KEY=", wechat_ini[1].strip(), properties_file)
         # self.replace_content("KEY_OPENINSTALL=", ini_dict.read_value_with_key("openinstallKey"),
         #                      properties_file)
+        get_appid = ini_dict.read_value_with_key("gtappid")
+        if len(get_appid) > 0:
+            self.replace_content("GT_APPID=", get_appid, properties_file)
         self.replace_content("HIDE_SLOGAN=", str(ini_dict.read_value_with_key("hideSlogan")).lower(),
                              properties_file)
         self.replace_content("HIDE_ONEYUANDIALOG=", str(ini_dict.read_value_with_key("hideOneYuan")).lower(),
