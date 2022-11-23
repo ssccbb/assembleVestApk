@@ -28,7 +28,7 @@ class Notice:
         pass
 
     @staticmethod
-    def build_content(wechat: bool, base_apk: bool, file: str, package: str, app_name: str, version: str, jiagu: bool, sign: bool, others: str = None):
+    def build_content(wechat: bool, base_apk: bool, file: str, package: str, app_name: str, version: str, jiagu: bool, sign: bool, log: str, others: str = None):
         """
         钉钉格式 '{"msgtype": "markdown","markdown":{"text":"markdown"}}'
         微信格式 '{"msgtype": "markdown","markdown":{"content":"markdown"}}'
@@ -49,7 +49,9 @@ class Notice:
                   f'\n> - 构建时间：{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}' \
                   f'\n> - 备注：{others}'
         # 固定外网访问
-        content = f'{content}\n>\n> [源文件下载](http:zhouqipa.cn/files/apks/{file})'
+        content = f'{content}\n>\n> [源apk文件下载](http:zhouqipa.cn/files/apks/{file})'
+        if log is not None and len(log) > 0 and 'data' in log:
+            content = f'{content}\n> [源log文件下载](http:zhouqipa.cn{log.replace("data", "files")})'
         # print(content)
         return base_.replace('contentstr', content)
         pass

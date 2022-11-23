@@ -1,18 +1,18 @@
 {
-  "com.rxgh.dobzkp": {
-    "packageName": "com.rxgh.dobzkp",
+  "com.qianghjj.mjbqg": {
+    "packageName": "com.qianghjj.mjbqg",
     "appName": "花间",
-    "versionName": "14.9.00",
-    "versionCode": "149000",
+    "versionName": "15.1.10",
+    "versionCode": "151100",
     "channel": "BetaAPPHuajian_1",
-    "ydKey": "4a142382154b47b7a6c40d5f0a939a05",
+    "ydKey": "a54182d5c61d44709d582be1891fea75",
     "qqKey": [
-      "102022575",
-      "RhlaArLcgVAAxVjI"
+      "101938365",
+      "f5e64ab603f2064dacb1762a6e9c0edd"
     ],
     "wechatKey": [
-      "wx21ea4820dab14c04",
-      "c43373c3ed414635346f11a587d6af58"
+      "wx5a28e70b0c9ad246",
+      "a81c39a6e637d5aa37d26f2686a2758b"
     ],
     "openinstallKey": "z5yc32",
     "gtappid": "",

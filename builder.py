@@ -30,7 +30,7 @@ def deco(func):
 
 class ReleaseBuilder:
 
-    def __init__(self, regular: bool, base: bool, version: str, packages: dict):
+    def __init__(self, regular: bool, base: bool, version: str, packages: dict, jiagu: bool, log: str):
         """
         构建流程
         渠道、版本、openinstall
@@ -46,6 +46,10 @@ class ReleaseBuilder:
         self.package_list = packages
         # 签名文件
         self.jks_path = ''
+        # 是否需要加固
+        self.yd_jiagu = jiagu
+        # 日志文件地址
+        self.log_txt = log
         pass
 
     def assemble_list_(self):
@@ -188,7 +192,7 @@ class ReleaseBuilder:
         # # step 10 : 拷贝文件
         apk_dir = os.path.join(package_helper.path_android, "app/build/outputs/apk/standard/release")
         if not os.path.exists(apk_dir):
-            package_helper.notice_bot_error(package_name)
+            package_helper.notice_bot_error(package_name, self.log_txt)
             print("ERROR! >>> 找不到apk文件")
             sys.exit(99)
         # 开始处理生成的apk
@@ -199,7 +203,9 @@ class ReleaseBuilder:
                 public_apk = os.path.join(constants.path_zhouqipa_cn_files, sub_file)
                 FilePlugin.copy_file(apk_file, public_apk)
                 # 加固签名
-                yd_sign_file = package_helper.yd_jiagu(public_apk, self.jks_path, constants.path_zhouqipa_cn_files)
+                yd_sign_file = None
+                if self.yd_jiagu and not self.need_base_apk:  # 基准包不需要加固
+                    yd_sign_file = package_helper.yd_jiagu(public_apk, self.jks_path, constants.path_zhouqipa_cn_files)
                 # bot通知
                 jiagu_status = False
                 if yd_sign_file is not None:
@@ -213,7 +219,9 @@ class ReleaseBuilder:
                                           self.base_version_name,  # 版本号
                                           jiagu_status,  # 加固状态
                                           True,  # 签名状态（默认打包带签名配置，加固也必定会签名）
-                                          self.package_list.get(package_name))  # ini内的备注信息
+                                          self.log_txt,  # 日志文件地址
+                                          self.package_list.get(package_name)  # ini内的备注信息
+                                          )
                 # 项目内apk
                 tar_dir = os.path.join(constants.path_self, "outputs")
                 FilePlugin.move_file(apk_file, tar_dir)
@@ -302,15 +310,6 @@ class ReleaseBuilder:
         process.rewrite_string_fog()
         # 更改可编辑文件md5
         process.change_file_md5()
-        pass
-
-    def yd_jiagu(self):
-        """
-        易盾加固
-        :return:
-        """
-        # jiagu.sh 加固脚本
-        # sign.py 签名脚本
         pass
 
 
@@ -473,7 +472,11 @@ class PackageHelper:
         # self.replace_content("MAIN_CHANNEL=", full_channel.split("_")[0], properties_file)
         # self.replace_content("SUB_CHANNEL=", full_channel.split("_")[1], properties_file)
         self.replace_content("YD_APPID=", ini_dict.read_value_with_key("ydKey"), properties_file)
-        self.replace_content("CHROME_PAY=", 'true' if is_base_apk else 'false', properties_file)
+        
+        #self.replace_content("CHROME_PAY=", 'true' if is_base_apk else 'false', properties_file)
+        self.replace_content("CHROME_PAY=", 'true', properties_file)
+        #self.replace_content("CHROME_PAY=", 'false', properties_file)
+        
         qq_ini = ini_dict.read_value_with_key("qqKey")
         self.replace_content("QQ_APPID=", qq_ini[0].strip(), properties_file)
         self.replace_content("QQ_KEY=", qq_ini[1].strip(), properties_file)
@@ -578,30 +581,30 @@ class PackageHelper:
         pass
 
     @staticmethod
-    def notice_bot(base_apk: bool, file: str, package: str, app_name: str, version: str, jiagu: bool, sign: bool,
-                   others: str):
+    def notice_bot(base_apk: bool, file: str, package: str, app_name: str,
+                   version: str, jiagu: bool, sign: bool, log: str, others: str):
         try:
             notice = Notice()
             if version is None or len(version) == 0:
                 if file.count("_") > 0:
                     version = file.split("_")[1] if file.split("_")[1].startswith("v") else ""
             notice.notice_wechat(WebHook.url_wechat_bot,
-                                 Notice.build_content(True, base_apk, file, package, app_name, version, jiagu, sign,
-                                                      others))
+                                 Notice.build_content(True, base_apk, file, package, app_name, version, jiagu, sign, log, others))
             notice.notice_ding_talk(WebHook.url_ding_talk_bot,
-                                    Notice.build_content(False, base_apk, file, package, app_name, version, jiagu, sign,
-                                                         others))
+                                    Notice.build_content(False, base_apk, file, package, app_name, version, jiagu, sign, log, others))
         finally:
             print('通知发送出错')
         pass
 
     @staticmethod
-    def notice_bot_error(package_name: str):
+    def notice_bot_error(package_name: str, log_txt: str):
         try:
             notice = Notice()
             content = '{"msgtype": "markdown","markdown":{"content":"> buildtime 马甲包构建脚本执行失败！\n> 当前包名 >>> packagename"}}'
             content = content.replace('packagename', package_name)
             content = content.replace('buildtime', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+            if log_txt is not None and len(log_txt) > 0 and 'data' in log_txt:
+                content = f'{content}\n>\n> [源log文件下载](http:zhouqipa.cn{log_txt.replace("data", "files")})'
             notice.notice_wechat(WebHook.url_wechat_bot, content)
         finally:
             print('通知发送出错')

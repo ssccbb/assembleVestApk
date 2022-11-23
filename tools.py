@@ -1,4 +1,5 @@
 # coding=utf-8
+import datetime
 import os, constants, sys
 from files.plugin.FilePlugin import FilePlugin
 from files.plugin.git import Git
@@ -46,7 +47,21 @@ class Entry:
     @staticmethod
     def release_apk():
         os.chdir(constants.path_self)
-        os.system('python release.py')
+        log_txt = f'/data/log/vest/releaseapk_{datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")}.txt'
+        # print(f'{log_txt}')
+        ini_file = os.path.join(constants.path_self, 'release.ini')
+        ini_str = FilePlugin.read_str_from_file(ini_file)
+        old_log_path = re.compile('log=[\\.\\w/-]+').search(ini_str).group().strip().lstrip()
+        ini_str = ini_str.replace(old_log_path, f'log={log_txt}')
+        FilePlugin.wirte_str_to_file(ini_str, ini_file)
+        print('============================================')
+        print(f'配置文件如下： ')
+        print(f'{ini_str}')
+        print('============================================')
+        # 后台执行命令并输出日志
+        print(f'执行 >>> nohup python release.py > {log_txt} 2>&1 &')
+        print(f'查看日志输出 {log_txt}')
+        print(os.system(f'nohup python release.py > {log_txt} 2>&1 &'))
         pass
 
     @staticmethod

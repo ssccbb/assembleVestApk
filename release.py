@@ -9,7 +9,9 @@ if __name__ == '__main__':
     config.read('./release.ini')
     need_regular = config.getboolean('yr', 'need_regular')
     need_base_apk = config.getboolean('yr', 'need_base_apk')
+    need_jiagu = config.getboolean('yr', 'need_yd_jiagu')
     base_version_name = str(config.get('yr', 'base_version_name'))
+    log_txt = str(config.get('log', 'log'))
     package_list = {}
     for package in config.options('packages'):
         package_list.update({package: config.get('packages', package)})
@@ -18,6 +20,6 @@ if __name__ == '__main__':
         sys.exit(0)
     print(f'配置确认成功！即将开始打包任务 >>> {package_list}')
     # 打包流程
-    job = builder.ReleaseBuilder(need_regular, need_base_apk, base_version_name, package_list)
+    job = builder.ReleaseBuilder(need_regular, need_base_apk, base_version_name, package_list, need_jiagu, log_txt)
     job.assemble_list_()
     pass
