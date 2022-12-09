@@ -28,7 +28,8 @@ class Notice:
         pass
 
     @staticmethod
-    def build_content(wechat: bool, base_apk: bool, file: str, package: str, app_name: str, version: str, jiagu: bool, sign: bool, log: str, others: str = None):
+    def build_content(wechat: bool, base_apk: bool, file: str, package: str, app_name: str, version: str, jiagu: bool,
+                      sign: bool, log: str, others: str = None):
         """
         钉钉格式 '{"msgtype": "markdown","markdown":{"text":"markdown"}}'
         微信格式 '{"msgtype": "markdown","markdown":{"content":"markdown"}}'
@@ -53,6 +54,23 @@ class Notice:
         if log is not None and len(log) > 0 and 'data' in log:
             content = f'{content}\n> [源log文件下载](http:zhouqipa.cn{log.replace("data", "files")})'
         # print(content)
+        return base_.replace('contentstr', content)
+        pass
+
+    @staticmethod
+    def build_rebot_content(success: bool, log_txt: str, port: int, env: str):
+        base_ = '{"msgtype": "markdown","markdown":{"title":"服务器API重启通知","content":"contentstr"}}'
+        url_log = log_txt
+        if log_txt.startswith('/data/log/'):
+            dicts = log_txt.split("/")
+            url = log_txt.replace("/data", "http://zhouqipa.cn/files")
+            url_log = f'[{dicts[len(dicts) - 1]}]({url})'
+        content = f'服务器API重启shell执行完毕：' \
+                  f'\n> - 时间: {time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}' \
+                  f'\n> - 端口: {port}' \
+                  f'\n> - 环境: {env}' \
+                  f'\n> - 执行状态: {success}' \
+                  f'\n> - 日志: {url_log}'
         return base_.replace('contentstr', content)
         pass
 

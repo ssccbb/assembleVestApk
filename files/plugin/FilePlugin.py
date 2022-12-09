@@ -400,6 +400,7 @@ class FilePlugin:
                     FilePlugin.reset_file_md5(os.path.join(path, file))
                 for subdir in dirs:
                     FilePlugin.reset_files_md5(os.path.join(path, subdir))
+            print('完成！')
         pass
 
     @staticmethod
@@ -415,10 +416,10 @@ class FilePlugin:
             chars = file.split(".")
             print("不支持的文件类型 >>> " + chars[len(chars) - 1])
             return
-        print(f'{file}')
-        print(f'原文件md5 >> {FilePlugin.md5(file)}')
+        # print(f'{file}')
+        # print(f'原文件md5 >> {FilePlugin.md5(file)}')
         FilePlugin.append_content_into_file("\n", file)
-        print(f'修改后文件md5 >> {FilePlugin.md5(file)}')
+        # print(f'修改后文件md5 >> {FilePlugin.md5(file)}')
         pass
 
     @staticmethod

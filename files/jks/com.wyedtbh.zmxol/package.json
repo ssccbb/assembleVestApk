@@ -1,0 +1,29 @@
+{
+  "com.wyedtbh.zmxol": {
+    "packageName": "com.wyedtbh.zmxol",
+    "appName": "基准包应用名",
+    "versionName": "15.2.00",
+    "versionCode": "152000",
+    "channel": "BetaAPPHuajian_1",
+    "ydKey": "8ec82436462e4de88278ad4c270783c4",
+    "qqKey": [
+      "102023611",
+      "Vt40iBQULyNXS9bs"
+    ],
+    "wechatKey": [
+      "wx999107b57d8d751e",
+      "1f8b06319564bf6d2d7134e4b0907a59"
+    ],
+    "openinstallKey": "z5yc32",
+    "gtappid": "4HUtwY4Gss9GpiwhM9hGJA",
+    "hideSlogan": true,
+    "hideOneYuan": false,
+    "hideQQLogin": false,
+    "hideWXLogin": false,
+    "hideSetting": true,
+    "hideGuide": true,
+    "hideTeen": true,
+    "hidePermissionDialog": true,
+    "hideDialog": true
+  }
+}

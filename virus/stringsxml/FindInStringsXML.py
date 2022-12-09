@@ -41,7 +41,6 @@ class Finder:
                         total_files.append(file_path)
         return total_files
 
-
     def load_file(self, path_file):
         """
         加载文件内引用的字符串（可编辑文件都统计）
@@ -71,8 +70,7 @@ class Finder:
             else:
                 total_matchs.append(result)
         return total_matchs
-    
-    
+
     def deal_strings_xml(self):
         """
         处理strings.xml定义字符串的引用
@@ -80,7 +78,8 @@ class Finder:
         """
         # 预加载文件 [{strings.xml路径 : [该module下所有的可编辑文件路径]}]
         module_list = {
-            os.path.join(self.path_android, "app/src/main/res/values/strings.xml"): self.load_module(os.path.join(self.path_android, "app")),
+            os.path.join(self.path_android, "app/src/main/res/values/strings.xml"): self.load_module(
+                os.path.join(self.path_android, "app")),
             os.path.join(self.path_android, "library-beauty/src/main/res/values/strings.xml"): self.load_module(
                 os.path.join(self.path_android, "library-beauty")),
             os.path.join(self.path_android, "library-commonlib/src/main/res/values/strings.xml"): self.load_module(
@@ -141,7 +140,7 @@ class Finder:
                     if total_strings is not None and (
                             f'R.string.{name}' in total_strings or f'@string/{name}' in total_strings):
                         has_use = True
-                        print(f'{name} has used in {file}')
+                        # print(f'{name} has used in {file}')
                 # print(f'{name} has use ? {has_use}')
                 # 移除无用的element
                 if not has_use:
@@ -150,10 +149,4 @@ class Finder:
                 os.remove(path_xml)
                 new_tree = ElementTree.ElementTree(root)
                 new_tree.write(path_xml, encoding='utf-8')
-        pass
-    
-    
-    def deal_encrypt_string(self):
-        # gradle
-        # UseForBaodu.java
         pass

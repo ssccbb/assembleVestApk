@@ -153,7 +153,7 @@ class Process:
             if new_value is not None:
                 file_content = file_content.replace(params_value, new_value)
         FilePlugin.wirte_str_to_file(file_content, aes.path_target_file)
-        print(f'重写 UseForBaoDu.java 成功')
+        print(f'重写 {aes.path_target_file} 成功')
         # 重写txt文件
         for file in aes.path_files:
             file_content = FilePlugin.read_str_from_file(file)

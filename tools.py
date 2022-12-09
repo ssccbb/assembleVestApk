@@ -5,6 +5,8 @@ from files.plugin.FilePlugin import FilePlugin
 from files.plugin.git import Git
 from files.sign.Sign import *
 from files.ydjiagu.YDJiagu import *
+from files.plugin.JKSPlugin import *
+from files.plugin.Notification import *
 
 
 class Entry:
@@ -84,6 +86,61 @@ class Entry:
         return Sign.sign(file, jks, 'LS880617\!@#', output)
         pass
 
+    @staticmethod
+    def create_jkss():
+        print(f'JKS配置文件如下：')
+        print(f'{FilePlugin.read_str_from_file("./jks.ini")}')
+        os.chdir('/root/sung/python/project/assembleVestApk')
+        builder = JKSCreate('./jks.ini')
+        builder.creat_multi_jks()
+        pass
+
+    @staticmethod
+    def start_server_api():
+        # python manage.py runserver 0.0.0.0:8000 --settings=settings.dev
+        path = '/root/sung/python/django/netserver/'
+        ini_path = os.path.join(path, 'run.ini')
+        os.chdir(path)
+        # 停止已有服务
+        stop_command = "ps -ef |grep manage.py |grep -v grep |awk '{print $2}' |xargs kill -9"
+        if os.system(stop_command) == 0:
+            print('停止django进程成功！')
+        # 读取启动配置
+        config = configparser.ConfigParser()
+        config.read(ini_path)
+        run_ip = config.get('config', 'run_ip')
+        env = config.get('config', 'env')
+        log_txt = f'/data/log/server/log_{str(time.strftime("%Y%m%d%H%M%S"))}.txt'
+        content = FilePlugin.read_str_from_file(ini_path)
+        print(f'>>>>>>>>>>>')
+        print(f'服务器配置如下：')
+        print(f'{content}')
+        print(f'>>>>>>>>>>>')
+        # 后台启动
+        command = f'(nohup python manage.py runserver {run_ip} --settings={env} > {log_txt} 2>&1 &)'
+        print(f'命令行输出到日志：{log_txt}')
+        # print(f'{command}')
+        result = os.system(command)
+        print('启动成功！' if result == 0 else '启动失败!')
+        # 通知
+        notice = Notice()
+        notice.notice_wechat(WebHook.url_wechat_bot, Notice.build_rebot_content(
+            result == 0, log_txt, int(run_ip.split(':')[1]), env.split('.')[1]))
+        pass
+
+    @staticmethod
+    def stop_server_api():
+        stop_command = "ps -ef |grep manage.py |grep -v grep |awk '{print $2}' |xargs kill -9"
+        notice = Notice()
+        base_ = '{"msgtype": "markdown","markdown":{"title":"服务器API停止通知","content":"contentstr"}}'
+        if os.system(stop_command) == 0:
+            print('停止django进程成功！')
+            notice.notice_wechat(WebHook.url_wechat_bot, base_.replace('contentstr', '服务器API进程监听已被停止！'))
+            return
+        print('停止失败！')
+        notice.notice_wechat(WebHook.url_wechat_bot, base_.replace('contentstr', '尝试停止服务器API进程监听失败！'))
+        pass
+
 
 if __name__ == '__main__':
     """
@@ -98,6 +155,9 @@ if __name__ == '__main__':
     print(f'【5】马甲包打包'.join(("\033[7m", "\033[0m")))
     print(f'【6】使用易盾加固apk'.join(("\033[7m", "\033[0m")))
     print(f'【7】apk签名'.join(("\033[7m", "\033[0m")))
+    print(f'【8】批量创建jks文件（配置文件jks.ini）'.join(("\033[7m", "\033[0m")))
+    print(f'【9】启动服务端api监听'.join(("\033[7m", "\033[0m")))
+    print(f'【10】停止服务端api监听'.join(("\033[7m", "\033[0m")))
     print('>>>')
     print(f'不输入内容按Enter退出')
     try:
@@ -142,6 +202,12 @@ if __name__ == '__main__':
                     elif inp == 7:
                         # 执行签名
                         Entry.sign_apk(apk_file, jks_file, output_dir)
+        elif inp == 8:
+            Entry.create_jkss()
+        elif inp == 9:
+            Entry.start_server_api()
+        elif inp == 10:
+            Entry.stop_server_api()
         else:
             sys.exit(0)
     except Exception as e:

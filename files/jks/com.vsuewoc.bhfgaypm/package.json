@@ -1,0 +1,29 @@
+{
+  "com.vsuewoc.bhfgaypm": {
+    "packageName": "com.vsuewoc.bhfgaypm",
+    "appName": "基准包应用名",
+    "versionName": "15.2.00",
+    "versionCode": "152000",
+    "channel": "BetaAPPHuajian_1",
+    "ydKey": "3909dfd8941744dfb0912565015279a5",
+    "qqKey": [
+      "102025832",
+      "vgEY8VDiy3va2HH4"
+    ],
+    "wechatKey": [
+      "wxaf1ca4cc0438265f",
+      "af178655a68029c864f68d9b7116e251"
+    ],
+    "openinstallKey": "z5yc32",
+    "gtappid": "w5UPDOPh8P9LhbYid5v0K2",
+    "hideSlogan": true,
+    "hideOneYuan": false,
+    "hideQQLogin": false,
+    "hideWXLogin": false,
+    "hideSetting": true,
+    "hideGuide": true,
+    "hideTeen": true,
+    "hidePermissionDialog": true,
+    "hideDialog": true
+  }
+}

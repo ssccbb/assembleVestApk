@@ -1,4 +1,5 @@
 # coding=utf-8
+import configparser
 import time, constants, sys
 from pathlib import Path
 from files.plugin.Notification import Notice, WebHook
@@ -8,6 +9,7 @@ from files.plugin.git import *
 from virus.Process import Process
 from files.ydjiagu.YDJiagu import *
 from tools import Entry
+from virus.encrypt.AES import AES
 
 
 def deco(func):
@@ -63,7 +65,7 @@ class ReleaseBuilder:
             for sub in os.listdir(constants.path_ini):
                 FilePlugin.remove_path_file(os.path.join(constants.path_ini, sub))
             # 开始单个打包
-            print(f'开始单个打包=====包名{package}')
+            print(f'当前打包任务，执行包名 >>>> {package}')
             back_path = os.path.join(constants.path_self, f'files/jks/{package}')
             if not os.path.exists(back_path):
                 print(
@@ -86,6 +88,7 @@ class ReleaseBuilder:
             jks_ = os.path.join(constants.path_ini, package + "/yr_release_key.jks")
             icon_ = os.path.join(constants.path_ini, "app_icon.png")
             json_ = os.path.join(constants.path_ini, "package.json")
+            channel_ = os.path.join(constants.path_ini, 'channel.ini')
             if not os.path.exists(icon_):
                 FilePlugin.copy_file(os.path.join(constants.path_self, 'res/app_icon.png'), icon_)
             if not os.path.exists(jks_):
@@ -96,6 +99,8 @@ class ReleaseBuilder:
                 print(
                     f'包配置文件不存在 >>>> {json_}\n===========================\n包名{package}因配置无效被跳过！\n===========================\n')
                 continue
+            if not os.path.exists(channel_):
+                print(f'channel.ini配置文件不存在 >>>> 包名{package}未配置离线推送渠道')
             # 先回退不必要的动
             git = Git(constants.path_android)
             git.remove_local_change()
@@ -176,6 +181,7 @@ class ReleaseBuilder:
             package_helper.change_app_package(package_name)
             # step 5 ：更改其他配置相关
             package_helper.change_app_ini(self.need_base_apk, json_parser)
+            package_helper.change_app_push(os.path.join(constants.path_ini, 'channel.ini'))
         # step 6 : 修改图片以及文本文件md5 （do_virus_change()方法内处理）
         # package_helper.change_md5()
         # step 7 : 修改代码文件(除wxapi)所在包名路径
@@ -192,7 +198,7 @@ class ReleaseBuilder:
         # # step 10 : 拷贝文件
         apk_dir = os.path.join(package_helper.path_android, "app/build/outputs/apk/standard/release")
         if not os.path.exists(apk_dir):
-            package_helper.notice_bot_error(package_name, self.log_txt)
+            package_helper.notice_bot_error(package_name)
             print("ERROR! >>> 找不到apk文件")
             sys.exit(99)
         # 开始处理生成的apk
@@ -231,7 +237,7 @@ class ReleaseBuilder:
         # git在回退代码时会把本地文件移除（此操作仅仅是为了下次gradle执行方便,不做也可以）
         self.check_local_properties()
         print("DONE!")
-        sys.exit(0)
+        # sys.exit(0)
         pass
 
     def check_local_properties(self):
@@ -472,11 +478,11 @@ class PackageHelper:
         # self.replace_content("MAIN_CHANNEL=", full_channel.split("_")[0], properties_file)
         # self.replace_content("SUB_CHANNEL=", full_channel.split("_")[1], properties_file)
         self.replace_content("YD_APPID=", ini_dict.read_value_with_key("ydKey"), properties_file)
-        
-        #self.replace_content("CHROME_PAY=", 'true' if is_base_apk else 'false', properties_file)
-        self.replace_content("CHROME_PAY=", 'true', properties_file)
+
+        self.replace_content("CHROME_PAY=", 'true' if is_base_apk else 'false', properties_file)
+        # self.replace_content("CHROME_PAY=", 'true', properties_file)
         #self.replace_content("CHROME_PAY=", 'false', properties_file)
-        
+
         qq_ini = ini_dict.read_value_with_key("qqKey")
         self.replace_content("QQ_APPID=", qq_ini[0].strip(), properties_file)
         self.replace_content("QQ_KEY=", qq_ini[1].strip(), properties_file)
@@ -519,6 +525,74 @@ class PackageHelper:
         print(str(properties_file) + " 配置替换完成！")
         pass
 
+    def change_app_push(self, channel_ini: str):
+        print(f'开始修改离线推送配置参数 ------------')
+        if not os.path.exists(channel_ini):
+            print(f'{channel_ini} 文件不存在！')
+            return
+        aes = AES(self.path_android)
+        config = configparser.ConfigParser
+        config.read(channel_ini)
+        result_head = f'public static final String '
+        result_middle = f' = VestHelper.getInstance().decodeAESString'
+        print(f'=============channel.ini===============')
+        print(f'{FilePlugin.read_str_from_file(channel_ini)}')
+        print(f'=============channel.ini===============')
+        # 华为
+        hw_appid = str(config.get('hw', 'appid'))
+        # hw_appkey = str(config.get('hw', 'appkey'))
+        # hw_secret = str(config.get('hw', 'secret'))
+        hw_certificatename = str(config.get('hw', 'certificatename'))
+        if hw_appid is not 'appid':
+            self.replace_content(f'{result_head}hwAppId{result_middle}',
+                                 f'("{aes.encrypt_string(hw_appid)}")', aes.path_target_file)
+        if hw_certificatename is not 'certificatename':
+            self.replace_content(f'{result_head}hwCertificateName{result_middle}',
+                                 f'("{aes.encrypt_string(hw_certificatename)}")', aes.path_target_file)
+        # 魅族
+        mz_appid = str(config.get('mz', 'appid'))
+        mz_appkey = str(config.get('mz', 'appkey'))
+        # mz_secret = str(config.get('mz', 'secret'))
+        mz_certificatename = str(config.get('mz', 'certificatename'))
+        if mz_appid is not 'appid':
+            self.replace_content(f'{result_head}mzAppId{result_middle}',
+                                 f'("{aes.encrypt_string(mz_appid)}")', aes.path_target_file)
+        if mz_appkey is not 'appkey':
+            self.replace_content(f'{result_head}mzAppKey{result_middle}',
+                                 f'("{aes.encrypt_string(mz_appkey)}")', aes.path_target_file)
+        if mz_certificatename is not 'certificatename':
+            self.replace_content(f'{result_head}mzCertificateName{result_middle}',
+                                 f'("{aes.encrypt_string(mz_certificatename)}")', aes.path_target_file)
+        # OPPO
+        oppo_appid = str(config.get('oppo', 'appid'))
+        oppo_appkey = str(config.get('oppo', 'appkey'))
+        oppo_secret = str(config.get('oppo', 'secret'))
+        oppo_certificatename = str(config.get('oppo', 'certificatename'))
+        if oppo_appid is not 'appid':
+            self.replace_content(f'{result_head}oppoAppId{result_middle}',
+                                 f'("{aes.encrypt_string(oppo_appid)}")', aes.path_target_file)
+        if oppo_appkey is not 'appkey':
+            self.replace_content(f'{result_head}oppoAppKey{result_middle}',
+                                 f'("{aes.encrypt_string(oppo_appkey)}")', aes.path_target_file)
+        if oppo_secret is not 'secret':
+            self.replace_content(f'{result_head}oppoAppSercet{result_middle}',
+                                 f'("{aes.encrypt_string(oppo_secret)}")', aes.path_target_file)
+        if oppo_certificatename is not 'certificatename':
+            self.replace_content(f'{result_head}oppoCertificateName{result_middle}',
+                                 f'("{aes.encrypt_string(oppo_certificatename)}")', aes.path_target_file)
+        print(f'更换VestHelper.java内离线推送配置执行完成！')
+        print(f'尝试读取文件内容以便输出日志记录...')
+        with open(aes.path_target_file, mode='r') as f:
+            read_lines = f.readlines()
+            f.close()
+        with open(aes.path_target_file, mode='w') as f:
+            for line in read_lines:
+                if result_head in line:
+                    print(f'>>>> {line}')
+            f.close()
+        print(f'>>>> done')
+        pass
+
     def replace_content(self, tag, content, target_file):
         if len(tag) == 0 or len(content) == 0:
             return
@@ -527,6 +601,7 @@ class PackageHelper:
             f.close()
         with open(target_file, mode='w') as f:
             for line in read_lines:
+                line = line.lstrip()
                 if line.startswith(tag):
                     line_new = line.replace(line, tag + content)
                     if line.endswith("\n"):
@@ -596,19 +671,24 @@ class PackageHelper:
             notice.notice_ding_talk(WebHook.url_ding_talk_bot,
                                     Notice.build_content(False, base_apk, file, package, app_name, version, jiagu, sign, log, others))
         finally:
-            print('通知发送出错')
+            print('通知发送完成')
         pass
 
     @staticmethod
-    def notice_bot_error(package_name: str, log_txt: str):
+    def notice_bot_error(package_name: str):
         try:
             notice = Notice()
             content = '{"msgtype": "markdown","markdown":{"content":"> buildtime 马甲包构建脚本执行失败！\n> 当前包名 >>> packagename"}}'
             content = content.replace('packagename', package_name)
             content = content.replace('buildtime', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+            config = configparser.ConfigParser()
+            config.read('./release.ini')
+            log_txt = str(config.get('log', 'log'))
             if log_txt is not None and len(log_txt) > 0 and 'data' in log_txt:
                 content = f'{content}\n>\n> [源log文件下载](http:zhouqipa.cn{log_txt.replace("data", "files")})'
+            else:
+                content = f'{content}\n> {log_txt}'
             notice.notice_wechat(WebHook.url_wechat_bot, content)
         finally:
-            print('通知发送出错')
+            print('通知发送完成')
         pass
