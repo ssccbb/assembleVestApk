@@ -433,7 +433,7 @@ class FilePlugin:
         newfile = open(file_path, 'a', encoding='utf-8')
         newfile.write(append_content)
         newfile.close()
-        print(f'{file_path} >> has changed')
+        #print(f'{file_path} >> has changed')
         pass
 
     @staticmethod

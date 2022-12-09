@@ -6,7 +6,7 @@ import configparser
 if __name__ == '__main__':
     print('开始进行打包前的配置确认....')
     config = configparser.ConfigParser()
-    config.read('./release.ini')
+    config.read(filenames='./release.ini')
     need_regular = config.getboolean('yr', 'need_regular')
     need_base_apk = config.getboolean('yr', 'need_base_apk')
     need_jiagu = config.getboolean('yr', 'need_yd_jiagu')

@@ -531,8 +531,8 @@ class PackageHelper:
             print(f'{channel_ini} 文件不存在！')
             return
         aes = AES(self.path_android)
-        config = configparser.ConfigParser
-        config.read(channel_ini)
+        config = configparser.ConfigParser()
+        config.read(filenames=channel_ini)
         result_head = f'public static final String '
         result_middle = f' = VestHelper.getInstance().decodeAESString'
         print(f'=============channel.ini===============')
@@ -581,16 +581,6 @@ class PackageHelper:
             self.replace_content(f'{result_head}oppoCertificateName{result_middle}',
                                  f'("{aes.encrypt_string(oppo_certificatename)}")', aes.path_target_file)
         print(f'更换VestHelper.java内离线推送配置执行完成！')
-        print(f'尝试读取文件内容以便输出日志记录...')
-        with open(aes.path_target_file, mode='r') as f:
-            read_lines = f.readlines()
-            f.close()
-        with open(aes.path_target_file, mode='w') as f:
-            for line in read_lines:
-                if result_head in line:
-                    print(f'>>>> {line}')
-            f.close()
-        print(f'>>>> done')
         pass
 
     def replace_content(self, tag, content, target_file):
@@ -682,7 +672,7 @@ class PackageHelper:
             content = content.replace('packagename', package_name)
             content = content.replace('buildtime', time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
             config = configparser.ConfigParser()
-            config.read('./release.ini')
+            config.read(filenames='./release.ini')
             log_txt = str(config.get('log', 'log'))
             if log_txt is not None and len(log_txt) > 0 and 'data' in log_txt:
                 content = f'{content}\n>\n> [源log文件下载](http:zhouqipa.cn{log_txt.replace("data", "files")})'
