@@ -35,15 +35,21 @@ class AES:
         return result[result.rindex(':') + 1:len(result)].replace('"', '').replace('\'', '')
 
     def encrypt_string(self, decrypt_string):
-        aes = AESCipher(self.new_aes_key)
+        return self.encrypt_string_with_key(decrypt_string, self.new_aes_key)
+        
+    def encrypt_string_with_key(self, decrypt_string, key):
+        aes = AESCipher(key)
         strings = aes.encrypt(decrypt_string)
-        # print(f'加密前 --> {decrypt_string} 加密后 --> {strings}')
+        print(f'加密前 --> {decrypt_string} 加密后 --> {strings}')
         return strings
 
     def decrypt_string(self, encrypt_string):
-        aes = AESCipher(self.old_aes_key)
+        return self.decrypt_string_with_key(encrypt_string, self.old_aes_key)
+        
+    def decrypt_string_with_key(self, encrypt_string, key):
+        aes = AESCipher(key)
         strings = aes.decrypt(encrypt_string)
-        # print(f'解密前 --> {encrypt_string} 解密后 --> {strings}')
+        print(f'解密前 --> {encrypt_string} 解密后 --> {strings}')
         return strings
 
     def get_new_encrypt_string(self, encrypt_string):

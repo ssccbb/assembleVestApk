@@ -545,10 +545,10 @@ class PackageHelper:
         hw_certificatename = str(config.get('hw', 'certificatename'))
         if hw_appid is not 'appid':
             self.replace_content(f'{result_head}hwAppId{result_middle}',
-                                 f'("{aes.encrypt_string(hw_appid)}")', aes.path_target_file)
+                                 f'("{aes.encrypt_string_with_key(hw_appid, aes.old_aes_key)}");', aes.path_target_file)
         if hw_certificatename is not 'certificatename':
             self.replace_content(f'{result_head}hwCertificateName{result_middle}',
-                                 f'("{aes.encrypt_string(hw_certificatename)}")', aes.path_target_file)
+                                 f'("{aes.encrypt_string_with_key(hw_certificatename, aes.old_aes_key)}");', aes.path_target_file)
         # 魅族
         mz_appid = str(config.get('mz', 'appid'))
         mz_appkey = str(config.get('mz', 'appkey'))
@@ -556,13 +556,13 @@ class PackageHelper:
         mz_certificatename = str(config.get('mz', 'certificatename'))
         if mz_appid is not 'appid':
             self.replace_content(f'{result_head}mzAppId{result_middle}',
-                                 f'("{aes.encrypt_string(mz_appid)}")', aes.path_target_file)
+                                 f'("{aes.encrypt_string_with_key(mz_appid, aes.old_aes_key)}");', aes.path_target_file)
         if mz_appkey is not 'appkey':
             self.replace_content(f'{result_head}mzAppKey{result_middle}',
-                                 f'("{aes.encrypt_string(mz_appkey)}")', aes.path_target_file)
+                                 f'("{aes.encrypt_string_with_key(mz_appkey, aes.old_aes_key)}");', aes.path_target_file)
         if mz_certificatename is not 'certificatename':
             self.replace_content(f'{result_head}mzCertificateName{result_middle}',
-                                 f'("{aes.encrypt_string(mz_certificatename)}")', aes.path_target_file)
+                                 f'("{aes.encrypt_string_with_key(mz_certificatename, aes.old_aes_key)}");', aes.path_target_file)
         # OPPO
         oppo_appid = str(config.get('oppo', 'appid'))
         oppo_appkey = str(config.get('oppo', 'appkey'))
@@ -570,16 +570,16 @@ class PackageHelper:
         oppo_certificatename = str(config.get('oppo', 'certificatename'))
         if oppo_appid is not 'appid':
             self.replace_content(f'{result_head}oppoAppId{result_middle}',
-                                 f'("{aes.encrypt_string(oppo_appid)}")', aes.path_target_file)
+                                 f'("{aes.encrypt_string_with_key(oppo_appid, aes.old_aes_key)}");', aes.path_target_file)
         if oppo_appkey is not 'appkey':
             self.replace_content(f'{result_head}oppoAppKey{result_middle}',
-                                 f'("{aes.encrypt_string(oppo_appkey)}")', aes.path_target_file)
+                                 f'("{aes.encrypt_string_with_key(oppo_appkey, aes.old_aes_key)}");', aes.path_target_file)
         if oppo_secret is not 'secret':
             self.replace_content(f'{result_head}oppoAppSercet{result_middle}',
-                                 f'("{aes.encrypt_string(oppo_secret)}")', aes.path_target_file)
+                                 f'("{aes.encrypt_string_with_key(oppo_secret, aes.old_aes_key)}");', aes.path_target_file)
         if oppo_certificatename is not 'certificatename':
             self.replace_content(f'{result_head}oppoCertificateName{result_middle}',
-                                 f'("{aes.encrypt_string(oppo_certificatename)}")', aes.path_target_file)
+                                 f'("{aes.encrypt_string_with_key(oppo_certificatename, aes.old_aes_key)}");', aes.path_target_file)
         print(f'更换VestHelper.java内离线推送配置执行完成！')
         pass
 
