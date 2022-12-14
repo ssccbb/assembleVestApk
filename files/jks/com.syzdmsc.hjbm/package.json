@@ -16,6 +16,10 @@
     ],
     "openinstallKey": "z5yc32",
     "gtappid": "fzXV3GFJ4X6RrjwAremlm4",
+    "jpush": [
+        "a5b92ccde06558ce047277b1",
+        "developer-default"
+    ],
     "hideSlogan": false,
     "hideOneYuan": false,
     "hideQQLogin": false,

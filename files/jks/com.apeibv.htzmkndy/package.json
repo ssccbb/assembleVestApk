@@ -1,0 +1,33 @@
+{
+  "com.apeibv.htzmkndy": {
+    "packageName": "com.apeibv.htzmkndy",
+    "appName": "基准包应用名",
+    "versionName": "15.3.00",
+    "versionCode": "153000",
+    "channel": "BetaAPPHuajian_1",
+    "ydKey": "62be573463e242d9b8a85624d5869af9",
+    "qqKey": [
+      "102031021",
+      "ztb5MPFrGSQPClyI"
+    ],
+    "wechatKey": [
+      "wxfc3cea11b77c695d",
+      "f7010bc06ef26b6a659242244010b6de"
+    ],
+    "openinstallKey": "z5yc32",
+    "gtappid": "fzXV3GFJ4X6RrjwAremlm4",
+    "jpush": [
+        "db8b5f9687589836e5162867",
+        "developer-default"
+    ],
+    "hideSlogan": true,
+    "hideOneYuan": false,
+    "hideQQLogin": false,
+    "hideWXLogin": false,
+    "hideSetting": true,
+    "hideGuide": true,
+    "hideTeen": true,
+    "hidePermissionDialog": true,
+    "hideDialog": true
+  }
+}

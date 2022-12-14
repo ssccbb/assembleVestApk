@@ -467,6 +467,7 @@ class PackageHelper:
         :return:
         """
         print("开始修改其他配置参数 ------ " + str(ini_dict))
+        aes = AES(self.path_android)
         properties_file = self.path_android_properties
         self.replace_content("APP_PACKAGENAME=", ini_dict.read_value_with_key("packageName").strip(),
                              properties_file)
@@ -493,7 +494,11 @@ class PackageHelper:
         #                      properties_file)
         get_appid = ini_dict.read_value_with_key("gtappid")
         if len(get_appid) > 0:
-            self.replace_content("GT_APPID=", get_appid, properties_file)
+            self.replace_content("GT_APPID=", aes.encrypt_string_with_key(get_appid, aes.old_aes_key), properties_file)
+        jpush = ini_dict.read_value_with_key("jpush")
+        if jpush is not None and len(jpush) > 0:
+            self.replace_content("JPUSH_ID=", aes.encrypt_string_with_key(jpush[0].strip(), aes.old_aes_key), properties_file)
+            self.replace_content("JPUSH_CHANNEL=", aes.encrypt_string_with_key(jpush[1].strip(), aes.old_aes_key), properties_file)
         self.replace_content("HIDE_SLOGAN=", str(ini_dict.read_value_with_key("hideSlogan")).lower(),
                              properties_file)
         self.replace_content("HIDE_ONEYUANDIALOG=", str(ini_dict.read_value_with_key("hideOneYuan")).lower(),

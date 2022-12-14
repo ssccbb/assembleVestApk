@@ -1,0 +1,33 @@
+{
+  "com.xuby.nvswk": {
+    "packageName": "com.xuby.nvswk",
+    "appName": "基准包应用名",
+    "versionName": "15.3.00",
+    "versionCode": "153000",
+    "channel": "BetaAPPHuajian_1",
+    "ydKey": "8a88233f069e49c886fec68151e7100f",
+    "qqKey": [
+      "102023613",
+      "DGEybzDD8ujDSaUC"
+    ],
+    "wechatKey": [
+      "wx67e5372b37f5145c",
+      "7875c580a840dc1999470537c9179e7a"
+    ],
+    "openinstallKey": "z5yc32",
+    "gtappid": "fzXV3GFJ4X6RrjwAremlm4",
+    "jpush": [
+        "05301778a77b17587a5f68cd",
+        "developer-default"
+    ],
+    "hideSlogan": true,
+    "hideOneYuan": false,
+    "hideQQLogin": false,
+    "hideWXLogin": false,
+    "hideSetting": true,
+    "hideGuide": true,
+    "hideTeen": true,
+    "hidePermissionDialog": true,
+    "hideDialog": true
+  }
+}

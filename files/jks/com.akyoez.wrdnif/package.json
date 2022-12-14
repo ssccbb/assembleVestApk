@@ -1,0 +1,33 @@
+{
+  "com.akyoez.wrdnif": {
+    "packageName": "com.akyoez.wrdnif",
+    "appName": "基准包应用名",
+    "versionName": "15.3.00",
+    "versionCode": "153000",
+    "channel": "BetaAPPHuajian_1",
+    "ydKey": "a05322f06ca740a7a46212291ff55d20",
+    "qqKey": [
+      "102034312",
+      "thJiuteDesrhLlxu"
+    ],
+    "wechatKey": [
+      "wx0a9a525f76f5c6b6",
+      "c9023dc736044bc7c8d070edbe226c45"
+    ],
+    "openinstallKey": "z5yc32",
+    "gtappid": "fzXV3GFJ4X6RrjwAremlm4",
+    "jpush": [
+        "99c420dfb13e2be06fa3fcda",
+        "developer-default"
+    ],
+    "hideSlogan": true,
+    "hideOneYuan": false,
+    "hideQQLogin": false,
+    "hideWXLogin": false,
+    "hideSetting": true,
+    "hideGuide": true,
+    "hideTeen": true,
+    "hidePermissionDialog": true,
+    "hideDialog": true
+  }
+}

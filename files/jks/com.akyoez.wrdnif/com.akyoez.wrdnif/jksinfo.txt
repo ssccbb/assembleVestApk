@@ -1,0 +1,39 @@
+:  
+密钥库类型: jks
+密钥库提供方: SUN
+
+您的密钥库包含 1 个条目
+
+别名: yr
+创建日期: 2022-12-2
+条目类型: PrivateKeyEntry
+证书链长度: 1
+证书[1]:
+所有者: CN=com.akyoez.wrdnif, OU=KQ, O=KQ, L=HZ, ST=HZ, C=CN
+发布者: CN=com.akyoez.wrdnif, OU=KQ, O=KQ, L=HZ, ST=HZ, C=CN
+序列号: 45a23c06
+有效期为 Fri Dec 02 14:04:03 CST 2022 至 Tue Nov 26 14:04:03 CST 2047
+证书指纹:
+	 MD5:  DA:FA:10:49:B7:EC:5D:25:8A:67:2D:22:D1:FD:76:E0
+	 SHA1: B3:32:1A:13:89:B8:74:5D:BB:B2:4D:59:88:EE:CF:10:78:B5:39:FC
+	 SHA256: FA:6C:47:10:68:C2:0B:47:C1:0A:1E:4B:47:54:9A:68:82:FB:03:9C:8B:F1:63:48:FA:ED:5F:09:3E:73:C7:3D
+签名算法名称: SHA256withRSA
+主体公共密钥算法: 2048 位 RSA 密钥
+版本: 3
+
+扩展: 
+
+#1: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: D9 70 A5 F3 3D 2A 47 91   9E 99 74 BE 58 1F 2B 55  .p..=*G...t.X.+U
+0010: 11 9A 05 35                                        ...5
+]
+]
+
+
+
+*******************************************
+*******************************************
+
+

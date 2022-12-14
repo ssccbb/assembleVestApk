@@ -1,0 +1,39 @@
+:  
+密钥库类型: jks
+密钥库提供方: SUN
+
+您的密钥库包含 1 个条目
+
+别名: yr
+创建日期: 2022-8-10
+条目类型: PrivateKeyEntry
+证书链长度: 1
+证书[1]:
+所有者: CN=com.xuby.nvswk, OU=KQ, O=KQ, L=HZ, ST=HZ, C=CN
+发布者: CN=com.xuby.nvswk, OU=KQ, O=KQ, L=HZ, ST=HZ, C=CN
+序列号: 7f3aaccf
+有效期为 Wed Aug 10 11:10:56 CST 2022 至 Sun Aug 04 11:10:56 CST 2047
+证书指纹:
+	 MD5:  B5:CC:0D:CF:28:4A:71:CE:07:78:C1:DB:AD:18:C4:D9
+	 SHA1: A2:37:C7:0E:F3:74:79:7F:74:1D:EE:8A:EC:FB:E9:90:F6:6C:20:08
+	 SHA256: F2:62:1A:5C:3F:3F:60:D4:BB:66:77:D8:07:B6:6D:95:0C:9F:B7:EE:87:F8:05:59:3D:C6:E7:8D:83:45:3B:D3
+签名算法名称: SHA256withRSA
+主体公共密钥算法: 2048 位 RSA 密钥
+版本: 3
+
+扩展: 
+
+#1: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 6B 2E E5 EA 5A BD 9C C0   14 F9 BD A2 CF E8 5D 68  k...Z.........]h
+0010: 97 4C 0F F6                                        .L..
+]
+]
+
+
+
+*******************************************
+*******************************************
+
+
